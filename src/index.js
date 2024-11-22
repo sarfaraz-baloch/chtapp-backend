@@ -59,8 +59,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-
 import path from "path";
+import { pathToFileURL } from "url";
 
 import { connectDb } from "./lib/db.js";
 
@@ -71,7 +71,12 @@ import { app, server } from "./lib/socket.js";
 dotenv.config();
 
 const PORT = process.env.PORT;
+// const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.resolve();
+
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("dirname:", __dirname);
+// console.log("filename:", __filename);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -85,13 +90,22 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+//   app.get("*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+//   });
+// }
+
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+  app.use(express.static(path.join(__dirname, "../frontend/build")));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+    res.sendFile(path.join(__dirname, "../frontend", "build", "index.html"));
   });
 }
+
 
 server.listen(PORT, () => {
   console.log("server is running on PORT:" + PORT);
