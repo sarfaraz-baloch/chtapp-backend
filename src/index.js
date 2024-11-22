@@ -80,12 +80,23 @@ console.log("dirname:", __dirname);
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+
+
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173",
+//     credentials: true,
+//   })
+// );
+
+app.use(cors({
+  origin: [
+    'http://localhost:5173', // For local development
+    'https://chat-app-woad-mu-18.vercel.app', // Vercel URL 1
+    'https://chat-mu6zsbnyx-sarfaraz-balochs-projects.vercel.app' // Vercel URL 2
+  ],
+  credentials: true, // Allow cookies and credentials
+}));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
@@ -105,6 +116,12 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(__dirname, "../frontend", "build", "index.html"));
   });
 }
+
+
+console.log("Static path:", path.join(__dirname, "../frontend/build"));
+console.log("Environment:", process.env.NODE_ENV);
+console.log("Mongo URI:", process.env.MONGODB_URI);
+
 
 
 server.listen(PORT, () => {
