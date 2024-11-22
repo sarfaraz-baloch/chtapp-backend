@@ -18,33 +18,38 @@ dotenv.config();
 app.use(express.json({ limit: '50mb' })); // This will increase the limit for JSON bodies
 app.use(cookieParser());
 app.use(cors({
-  // origin: "http://localhost:5173",
-  origin: "*",
+  origin: "http://localhost:5173",
+  // origin: "*",
   credentials: true
 }));
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5001;
 const __dirname = path.resolve();
+
+
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/build")));
-
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+  
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
+    res.sendFile(path.resolve(__dirname, "../frontend", "build", "/index.html"));
   });
 }
 
+console.log("NODE_ENV:", process.env.NODE_ENV);
 
-// server.listen(PORT, () => {
-//   console.log("Server is running on port " + PORT);
-//   connectDb();
+
+server.listen(PORT, () => {
+  console.log("Server is running on port " + PORT);
+  connectDb();
+});
+
+// app.get('/', (req, res) => {
+//   res.send('Hello, World!');
 // });
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
-});
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// server.listen(PORT, '0.0.0.0', () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });
