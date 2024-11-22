@@ -18,7 +18,8 @@ dotenv.config();
 app.use(express.json({ limit: '50mb' })); // This will increase the limit for JSON bodies
 app.use(cookieParser());
 app.use(cors({
-  origin: "http://localhost:5173",
+  // origin: "http://localhost:5173",
+  origin: "*",
   credentials: true
 }));
 
@@ -36,7 +37,14 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-server.listen(PORT, () => {
-  console.log("Server is running on port " + PORT);
-  connectDb();
+
+// server.listen(PORT, () => {
+//   console.log("Server is running on port " + PORT);
+//   connectDb();
+// });
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
+});
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
 });
